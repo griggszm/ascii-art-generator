@@ -1,7 +1,7 @@
 /**
  * SE1021 - 032
  * Winter 2015-2016
- * ASCIIArtGen
+ * ASCIIArtOutput
  * Name: Zachary Griggs (griggszm)
  * Created: 1/30/2016
  */
@@ -14,16 +14,23 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
-public class ASCIIArtGen extends JFrame {
+/**
+ * Reads a binary image file and displays it as text
+ */
+public class ASCIIArtOutput extends JFrame {
 
     private JTextArea output = new JTextArea();
     private BufferedImage img;
-    private static final String INPUT = "input.bmp";
 
-    public ASCIIArtGen() {
+    /**
+     * Required constructor. Takes a file, generates ASCII, and displays
+     *
+     * @param file          Binary image file to read
+     * @throws IOException  If file cannot be read
+     */
+    public ASCIIArtOutput(File file) throws IOException {
         this.setTitle("Ascii Art Generator");
         this.setSize(800, 900);
         this.setLayout(new BorderLayout());
@@ -31,14 +38,15 @@ public class ASCIIArtGen extends JFrame {
         this.add(output);
         this.setResizable(false);
         output.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 3));
-        try {
-            this.read(new File(INPUT));
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this.getContentPane(), "Invalid file");
-            System.exit(-1);
-        }
+        this.read(file);
     }
 
+    /**
+     * Reads file and generates ASCII from it
+     *
+     * @param file          Binary image file to read
+     * @throws IOException  If file cannot be read
+     */
     private void read(File file) throws IOException {
         img = ImageIO.read(file);
         int colCount = img.getHeight();
@@ -60,8 +68,15 @@ public class ASCIIArtGen extends JFrame {
         }
     }
 
+    /**
+     * Converts the specified color to a letter representation
+     *
+     * @param color
+     * @return
+     */
     private String colorToLetter(Color color) {
-        double brightness = Math.pow((Math.pow(color.getRed(),2) + Math.pow(color.getGreen(),2) + Math.pow(color.getBlue(),2)),0.33);
+        double brightness = Math.pow((Math.pow(color.getRed(),2) + Math.pow(color.getGreen(),2)
+                + Math.pow(color.getBlue(),2)),0.33);
         if(brightness>50) {
             return(" ");
         } else if(brightness>40) {
@@ -75,10 +90,5 @@ public class ASCIIArtGen extends JFrame {
         } else  {
             return ("W");
         }
-    }
-
-    public static void main(String[] args) {
-        ASCIIArtGen generator = new ASCIIArtGen();
-        generator.setVisible(true);
     }
 }
