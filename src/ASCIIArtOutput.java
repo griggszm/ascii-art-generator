@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -19,7 +20,7 @@ import javax.swing.JTextArea;
 /**
  * Reads a binary image file and displays it as text
  */
-public class ASCIIArtOutput extends JFrame {
+public final class ASCIIArtOutput extends JFrame {
 
     private JTextArea output = new JTextArea();
     private BufferedImage img;
@@ -39,6 +40,7 @@ public class ASCIIArtOutput extends JFrame {
         this.setResizable(false);
         output.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 3));
         this.read(file);
+        this.setVisible(true);
     }
 
     /**
@@ -71,24 +73,38 @@ public class ASCIIArtOutput extends JFrame {
     /**
      * Converts the specified color to a letter representation
      *
-     * @param color
-     * @return
+     * @param color Color to get brightness of and convert to letter
+     * @return      Letter representation of color
      */
-    private String colorToLetter(Color color) {
+    private char colorToLetter(Color color) {
         double brightness = Math.pow((Math.pow(color.getRed(),2) + Math.pow(color.getGreen(),2)
                 + Math.pow(color.getBlue(),2)),0.33);
         if(brightness>50) {
-            return(" ");
+            return(' ');
         } else if(brightness>40) {
-            return(".");
+            return('.');
         } else if(brightness>30) {
-            return ("+");
+            return ('+');
         } else if(brightness>20) {
-            return ("?");
+            return ('?');
         } else if(brightness>10) {
-            return ("#");
+            return ('#');
         } else  {
-            return ("W");
+            return ('W');
         }
+    }
+
+    /**
+     * Saves the output to the target file.
+     * For best result, should be viewed in font size
+     * 1-3, monospaced, plain
+     *
+     * @param file  File to save to
+     */
+    public void save(File file) throws IOException {
+        PrintWriter out = new PrintWriter(file);
+        out.println(output.getText());
+        out.flush();
+        out.close();
     }
 }
