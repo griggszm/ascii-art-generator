@@ -49,11 +49,13 @@ public class ASCIIArtController {
      */
     public void showOuptut(String in) {
         try {
-            new ASCIIArtOutput(new File(in));
+            new ASCIIArtOutput(new File(in),ui.getReductionScale());
         } catch (IOException ex) {
             ui.displayErrorMessage("Cannot open file: " + in);
         } catch (NullPointerException ex) {
             ui.displayErrorMessage("Not an image file");
+        } catch (NumberFormatException ex) {
+            ui.displayErrorMessage("Scale down must be a whole, positive number");
         }
     }
 
@@ -66,7 +68,7 @@ public class ASCIIArtController {
     public void generate(String in, String out) {
         try {
             File inputFile = new File(in);
-            ASCIIArtOutput display = new ASCIIArtOutput(inputFile);
+            ASCIIArtOutput display = new ASCIIArtOutput(inputFile,ui.getReductionScale());
             if(!out.equals("")) {
                 File outputFile = new File(out);
                 display.save(outputFile);
@@ -75,6 +77,8 @@ public class ASCIIArtController {
             ui.displayErrorMessage("Cannot open file: " + in);
         }  catch (NullPointerException ex) {
             ui.displayErrorMessage("Not an image file");
+        } catch (NumberFormatException ex) {
+            ui.displayErrorMessage("Scale down must be a whole, positive number");
         }
     }
 

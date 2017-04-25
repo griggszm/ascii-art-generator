@@ -10,9 +10,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -28,45 +32,46 @@ public final class ASCIIArtOutput extends JFrame {
     /**
      * Required constructor. Takes a file, generates ASCII, and displays
      *
-     * @param file          Binary image file to read
-     * @throws IOException  If file cannot be read
+     * @param file           Binary image file to read
+     * @param reductionScale Amount to downscale picture by.
+     * @throws IOException   If file cannot be read
      */
-    public ASCIIArtOutput(File file) throws IOException {
+    public ASCIIArtOutput(File file, int reductionScale) throws IOException {
         this.setTitle("Ascii Art Generator");
-        this.setSize(800, 900);
+        this.setSize(1800, 2000);
         this.setLayout(new BorderLayout());
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
         this.add(output);
-        this.setResizable(false);
+        //this.setResizable(false);
         output.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 3));
-        this.read(file);
+        this.read(file, reductionScale);
         this.setVisible(true);
     }
 
     /**
      * Reads file and generates ASCII from it
      *
-     * @param file          Binary image file to read
-     * @throws IOException  If file cannot be read
+     * @param file           Binary image file to read
+     * @param reductionScale Amount to downscale picture by.
+     * @throws IOException   If file cannot be read
      */
-    private void read(File file) throws IOException {
+    private void read(File file, int reductionScale) throws IOException {
         img = ImageIO.read(file);
         int colCount = img.getHeight();
         int rowCount = img.getWidth();
-        int index = 1;
         String[] s = new String[(colCount)+1];
         for(int i = 0; i<colCount; i++) {
             s[i] = "";
         }
 
-        for(int col = 0; col<colCount; col=col+index) {
-            for(int row = 0; row<rowCount; row=row+index) {
+        for(int col = 0; col<colCount; col=col+reductionScale) {
+            for(int row = 0; row<rowCount; row=row+reductionScale) {
                 s[col]=s[col]+colorToLetter(new Color(img.getRGB(row,col)));
             }
         }
 
         for(String s2 : s) {
-            output.setText(output.getText() + s2  + "\n");
+            output.setText(output.getText() + s2  + "\r\n");
         }
     }
 
@@ -102,8 +107,10 @@ public final class ASCIIArtOutput extends JFrame {
      * @param file  File to save to
      */
     public void save(File file) throws IOException {
-        PrintWriter out = new PrintWriter(file);
-        out.println(output.getText());
+        Writer out = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(file), "UTF-8"));
+        out.write(output.getText());
+        System.out.println(output.getText());
         out.flush();
         out.close();
     }

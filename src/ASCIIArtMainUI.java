@@ -25,12 +25,14 @@ public final class ASCIIArtMainUI {
     private JFrame ui;
     private JTextField fileInput;
     private JTextField fileOuptut;
+    private JTextField reductionScale;
     private JButton browseInputButton;
     private JButton browseOutputButton;
     private JButton generateButton;
     private JButton previewButton;
 
     private ASCIIArtController controller;
+
     /**
      * Required constructor. Creates and shows UI.
      *
@@ -62,6 +64,8 @@ public final class ASCIIArtMainUI {
     private void createControls() {
         fileInput = new JTextField(20);
         fileOuptut = new JTextField(20);
+        reductionScale = new JTextField(5);
+        reductionScale.setText("1");
         browseInputButton = new JButton("Browse");
         browseOutputButton = new JButton("Browse");
         generateButton = new JButton("Generate and Save");
@@ -78,6 +82,8 @@ public final class ASCIIArtMainUI {
         ui.add(new JLabel("Output: "));
         ui.add(fileOuptut);
         ui.add(browseOutputButton);
+        ui.add(new JLabel("Scale down by: "));
+        ui.add(reductionScale);
         ui.add(generateButton);
         ui.add(previewButton);
     }
@@ -109,5 +115,9 @@ public final class ASCIIArtMainUI {
      */
     public void displayErrorMessage(String message) {
         JOptionPane.showMessageDialog(ui, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public int getReductionScale() {
+        return Integer.parseInt(reductionScale.getText());
     }
 }
