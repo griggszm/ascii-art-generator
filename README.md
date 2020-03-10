@@ -1,2 +1,1 @@
-# ascii-art-generator
-converts bitmap image into text
+Converts a given image into text that resembles that image.
